@@ -1,0 +1,26 @@
+# -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
+
+def build(bld):
+    obj = bld.create_ns3_program('dash-example', ['udp'])
+    obj.source = 'dash-example.cc'
+    obj = bld.create_ns3_program('link-example', ['udp'])
+    obj.source = 'link-example.cc'
+    obj = bld.create_ns3_program('dash-wifi', ['udp'])
+    obj.source = 'dash-wifi.cc'
+    obj = bld.create_ns3_program('dash-multi', ['udp'])
+    obj.source = 'dash-multi.cc'
+    obj = bld.create_ns3_program('dash-add', ['udp'])
+    obj.source = 'dash-add.cc'	
+    obj = bld.create_ns3_program('dash-4g', ['udp'])
+    obj.source = 'dash-4g.cc'    
+    obj = bld.create_ns3_program('dash-fix', ['udp'])
+    obj.source = 'dash-fix.cc'
+    obj = bld.create_ns3_program('first', ['udp'])
+    obj.source = 'first.cc'
+
+    obj = bld.create_ns3_program('ttt', ['udp'])
+    obj.source = 'ttt.cc'
+
+
+    obj = bld.create_ns3_program('udp_dash', ['udp'])
+    obj.source = 'udp_dash.cc'
