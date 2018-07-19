@@ -94,6 +94,8 @@ main(int argc, char *argv[])
   std::string cur_dir="";
   std::string dr_dir="";
   
+  string pre_bw=""; //bandwidth
+  string pre_dy=""; // delay
 
 //
 // Allow the user to override any of the defaults at
@@ -167,7 +169,13 @@ main(int argc, char *argv[])
       "The directory storing the video size information.", size_dir); //yibin
   cmd.AddValue("req_num",
       "The directory storing the video size information.", req_num);
+
+  cmd.AddValue("bw",
+      "The directory storing the video size information.", pre_bw);
+  cmd.AddValue("dy",
+      "The directory storing the video size information.", pre_dy);
   cmd.Parse(argc, argv);
+
    //yibin 
   //network bw info kbps
   for(int i=0; i<6; i++){
@@ -196,6 +204,10 @@ main(int argc, char *argv[])
   bw[5][1]=6.2;
   bw[5][2]=4.6;
   //user bw
+  string delay_opt[3]={"3ms","10ms","40ms"};
+  string d_delay;
+
+
   std::string tmp_user_bw;
   ifstream user_bw_file(bw_type);
   if(!user_bw_file)
@@ -205,6 +217,7 @@ main(int argc, char *argv[])
       cnt=cnt+1;
       if(cnt>bw_idx*users && cnt<=(bw_idx+1)*users){
 	    user_bw.push_back(bw[bw_area][stoi(tmp_user_bw)]);
+	    d_delay = delay_opt[stoi(tmp_user_bw)];
       }
   }
   user_bw_file.close();
@@ -242,7 +255,10 @@ main(int argc, char *argv[])
 	 // segment size info based on network speed and user
      char tmp_size_file[100];
 //     sprintf(tmp_size_file,"%s%s_user%02d_%dx%d_%.1f_gt_%s",size_dir.c_str(),video_names[tmp_user[0]].c_str(),stoi(user_idx),tile_cols,tile_rows,user_bw[cnt],algo.c_str());
-     sprintf(tmp_size_file,"%s%s_user%02d_0_1_cur_size",size_dir.c_str(),video_names[tmp_user[0]].c_str(),stoi(user_idx));
+//     sprintf(tmp_size_file,"%s%s_user%02d_0_1_cur_size",size_dir.c_str(),video_names[tmp_user[0]].c_str(),stoi(user_idx));
+     
+     sprintf(tmp_size_file,"%s%dx%d/%s_user%02d_0_1_cur_size",size_dir.c_str(),tile_rows,tile_cols,video_names[tmp_user[0]].c_str(),stoi(user_idx));
+
      std::string size_file(tmp_size_file);
      ifstream size_fp(size_file);
      if(!size_fp)
@@ -341,8 +357,8 @@ main(int argc, char *argv[])
 
   for (uint32_t user = 0; user < users; user++){ 
 	PointToPointHelper p2p;
-	p2p.SetDeviceAttribute ("DataRate", StringValue (user_bwr[user]));
-	p2p.SetChannelAttribute ("Delay", StringValue ("10ms"));
+	p2p.SetDeviceAttribute ("DataRate", StringValue (pre_bw)); //user_bwr[user]
+	p2p.SetChannelAttribute ("Delay", StringValue (pre_dy)); //d_delay
 	NetDeviceContainer x = p2p.Install (user_node[user]);
 	user_device.push_back(x);
   }

@@ -380,6 +380,8 @@ DudpClient::Send (void)
   // so that tags added to the packet can be sent as well
 
  double B_remain = t_bw*1000000 - TP;
+ B_remain = B_remain*0.7;
+
  double each_time = 1346.0*8/B_remain;
  
   

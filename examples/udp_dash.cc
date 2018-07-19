@@ -96,6 +96,10 @@ main(int argc, char *argv[])
   std::string cur_dir="";
   std::string dr_dir="";
   
+  string pre_bw=""; //bandwidth
+  string pre_dy=""; // delay
+
+
 
 //
 // Allow the user to override any of the defaults at
@@ -169,6 +173,12 @@ main(int argc, char *argv[])
       "The directory storing the video size information.", size_dir); //yibin
   cmd.AddValue("req_num",
       "The directory storing the video size information.", req_num);
+  cmd.AddValue("bw",
+      "The directory storing the video size information.", pre_bw);
+  cmd.AddValue("dy",
+      "The directory storing the video size information.", pre_dy);
+
+
   cmd.Parse(argc, argv);
    //yibin 
   //network bw info kbps
@@ -219,7 +229,10 @@ main(int argc, char *argv[])
   cout << "delay:   " << d_delay <<endl; //Jerry
 
 
-  t_bw =user_bw[0]; //Jerry
+  string aaaaa = pre_bw.substr(0,2);
+  t_bw = stod (aaaaa);
+
+//  t_bw =user_bw[0]; //Jerry
    //yibin 
    // video info index
   std::string video_info_index="";
@@ -254,19 +267,19 @@ main(int argc, char *argv[])
      char tmp_size_file[100];
 //     sprintf(tmp_size_file,"%s%s_user%02d_%dx%d_%.1f_gt_%s",size_dir.c_str(),video_names[tmp_user[0]].c_str(),stoi(user_idx),tile_cols,tile_rows,user_bw[cnt],algo.c_str());
    
-     sprintf(tmp_size_file,"%s%s_user%02d_0_1_cur_size",size_dir.c_str(),video_names[tmp_user[0]].c_str(),stoi(user_idx));
+     sprintf(tmp_size_file,"%s%dx%d/%s_user%02d_0_1_cur_size",size_dir.c_str(),tile_rows,tile_cols,video_names[tmp_user[0]].c_str(),stoi(user_idx));
 
      // udp Jerry
      char tmp2_size_file[100]; //qp1
-     sprintf(tmp2_size_file,"%s%s_user%02d_0_1_udp_size_qp28",size_dir.c_str(),video_names[tmp_user[0]].c_str(),stoi(user_idx));
+     sprintf(tmp2_size_file,"%s%dx%d/%s_user%02d_0_1_udp_size_qp28",size_dir.c_str(),tile_rows,tile_cols,video_names[tmp_user[0]].c_str(),stoi(user_idx));
 
 
      char tmp3_size_file[100]; //qp2
-     sprintf(tmp3_size_file,"%s%s_user%02d_0_1_udp_size_qp32",size_dir.c_str(),video_names[tmp_user[0]].c_str(),stoi(user_idx));
+     sprintf(tmp3_size_file,"%s%dx%d/%s_user%02d_0_1_udp_size_qp32",size_dir.c_str(),tile_rows,tile_cols,video_names[tmp_user[0]].c_str(),stoi(user_idx));
 
 
      char tmp4_size_file[100]; //qp3
-     sprintf(tmp4_size_file,"%s%s_user%02d_0_1_udp_size_qp36",size_dir.c_str(),video_names[tmp_user[0]].c_str(),stoi(user_idx));
+     sprintf(tmp4_size_file,"%s%dx%d/%s_user%02d_0_1_udp_size_qp36",size_dir.c_str(),tile_rows,tile_cols,video_names[tmp_user[0]].c_str(),stoi(user_idx));
 
      std::string size_file(tmp_size_file);
      ifstream size_fp(size_file);
@@ -431,8 +444,8 @@ main(int argc, char *argv[])
 
   for (uint32_t user = 0; user < users; user++){ 
 	PointToPointHelper p2p;
-	p2p.SetDeviceAttribute ("DataRate", StringValue (user_bwr[user]));
-	p2p.SetChannelAttribute ("Delay", StringValue (d_delay));
+	p2p.SetDeviceAttribute ("DataRate", StringValue (pre_bw));
+	p2p.SetChannelAttribute ("Delay", StringValue (pre_dy)); //
 	NetDeviceContainer x = p2p.Install (user_node[user]);
 	user_device.push_back(x);
   }
